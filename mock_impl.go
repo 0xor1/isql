@@ -9,6 +9,19 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
+type MockOpener struct {
+	mock.Mock
+}
+
+func (m *MockOpener) Open(driverName, dataSourceName string) (DB, error) {
+	args := m.Called(driverName, dataSourceName)
+	db := args.Get(0)
+	if db == nil {
+		return nil, args.Error(1)
+	}
+	return db.(DB), args.Error(1)
+}
+
 type MockDB struct {
 	mock.Mock
 }
