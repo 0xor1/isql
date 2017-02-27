@@ -51,7 +51,7 @@ func (m *MockDB) Driver() driver.Driver {
 }
 
 func (m *MockDB) Exec(query string, args ...interface{}) (sql.Result, error) {
-	params := make([]interface{}, len(args)+1)
+	params := make([]interface{}, 0, len(args)+1)
 	params = append(params, query)
 	params = append(params, args...)
 	res := m.Called(params...)
@@ -59,7 +59,7 @@ func (m *MockDB) Exec(query string, args ...interface{}) (sql.Result, error) {
 }
 
 func (m *MockDB) ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
-	params := make([]interface{}, len(args)+2)
+	params := make([]interface{}, 0, len(args)+2)
 	params = append(params, ctx)
 	params = append(params, query)
 	params = append(params, args...)
@@ -86,7 +86,7 @@ func (m *MockDB) PrepareContext(ctx context.Context, query string) (Stmt, error)
 }
 
 func (m *MockDB) Query(query string, args ...interface{}) (Rows, error) {
-	params := make([]interface{}, len(args)+1)
+	params := make([]interface{}, 0, len(args)+1)
 	params = append(params, query)
 	params = append(params, args...)
 	res := m.Called(params...)
@@ -94,7 +94,7 @@ func (m *MockDB) Query(query string, args ...interface{}) (Rows, error) {
 }
 
 func (m *MockDB) QueryContext(ctx context.Context, query string, args ...interface{}) (Rows, error) {
-	params := make([]interface{}, len(args)+2)
+	params := make([]interface{}, 0, len(args)+2)
 	params = append(params, ctx)
 	params = append(params, query)
 	params = append(params, args...)
@@ -103,7 +103,7 @@ func (m *MockDB) QueryContext(ctx context.Context, query string, args ...interfa
 }
 
 func (m *MockDB) QueryRow(query string, args ...interface{}) Row {
-	params := make([]interface{}, len(args)+1)
+	params := make([]interface{}, 0, len(args)+1)
 	params = append(params, query)
 	params = append(params, args...)
 	res := m.Called(params...)
@@ -111,7 +111,7 @@ func (m *MockDB) QueryRow(query string, args ...interface{}) Row {
 }
 
 func (m *MockDB) QueryRowContext(ctx context.Context, query string, args ...interface{}) Row {
-	params := make([]interface{}, len(args)+2)
+	params := make([]interface{}, 0, len(args)+2)
 	params = append(params, ctx)
 	params = append(params, query)
 	params = append(params, args...)
@@ -220,7 +220,7 @@ func (m *MockStmt) Exec(args ...interface{}) (sql.Result, error) {
 }
 
 func (m *MockStmt) ExecContext(ctx context.Context, args ...interface{}) (sql.Result, error) {
-	params := make([]interface{}, len(args)+1)
+	params := make([]interface{}, 0, len(args)+1)
 	params = append(params, ctx)
 	params = append(params, args...)
 	res := m.Called(params...)
@@ -233,7 +233,7 @@ func (m *MockStmt) Query(args ...interface{}) (Rows, error) {
 }
 
 func (m *MockStmt) QueryContext(ctx context.Context, args ...interface{}) (Rows, error) {
-	params := make([]interface{}, len(args)+1)
+	params := make([]interface{}, 0, len(args)+1)
 	params = append(params, ctx)
 	params = append(params, args...)
 	res := m.Called(params...)
@@ -246,7 +246,7 @@ func (m *MockStmt) QueryRow(args ...interface{}) Row {
 }
 
 func (m *MockStmt) QueryRowContext(ctx context.Context, args ...interface{}) Row {
-	params := make([]interface{}, len(args)+1)
+	params := make([]interface{}, 0, len(args)+1)
 	params = append(params, ctx)
 	params = append(params, args...)
 	res := m.Called(params...)
@@ -269,7 +269,7 @@ func (m *MockTx) Commit() error {
 }
 
 func (m *MockTx) Exec(query string, args ...interface{}) (sql.Result, error) {
-	params := make([]interface{}, len(args)+1)
+	params := make([]interface{}, 0, len(args)+1)
 	params = append(params, query)
 	params = append(params, args...)
 	res := m.Called(params...)
@@ -277,7 +277,7 @@ func (m *MockTx) Exec(query string, args ...interface{}) (sql.Result, error) {
 }
 
 func (m *MockTx) ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
-	params := make([]interface{}, len(args)+2)
+	params := make([]interface{}, 0, len(args)+2)
 	params = append(params, ctx)
 	params = append(params, query)
 	params = append(params, args...)
@@ -296,7 +296,7 @@ func (m *MockTx) PrepareContext(ctx context.Context, query string) (Stmt, error)
 }
 
 func (m *MockTx) Query(query string, args ...interface{}) (Rows, error) {
-	params := make([]interface{}, len(args)+1)
+	params := make([]interface{}, 0, len(args)+1)
 	params = append(params, query)
 	params = append(params, args...)
 	res := m.Called(params...)
@@ -304,7 +304,7 @@ func (m *MockTx) Query(query string, args ...interface{}) (Rows, error) {
 }
 
 func (m *MockTx) QueryContext(ctx context.Context, query string, args ...interface{}) (Rows, error) {
-	params := make([]interface{}, len(args)+2)
+	params := make([]interface{}, 0, len(args)+2)
 	params = append(params, ctx)
 	params = append(params, query)
 	params = append(params, args...)
@@ -313,7 +313,7 @@ func (m *MockTx) QueryContext(ctx context.Context, query string, args ...interfa
 }
 
 func (m *MockTx) QueryRow(query string, args ...interface{}) Row {
-	params := make([]interface{}, len(args)+1)
+	params := make([]interface{}, 0, len(args)+1)
 	params = append(params, query)
 	params = append(params, args...)
 	res := m.Called(params...)
@@ -321,7 +321,7 @@ func (m *MockTx) QueryRow(query string, args ...interface{}) Row {
 }
 
 func (m *MockTx) QueryRowContext(ctx context.Context, query string, args ...interface{}) Row {
-	params := make([]interface{}, len(args)+2)
+	params := make([]interface{}, 0, len(args)+2)
 	params = append(params, ctx)
 	params = append(params, query)
 	params = append(params, args...)
