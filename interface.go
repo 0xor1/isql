@@ -8,7 +8,7 @@ import (
 	"reflect"
 )
 
-func NewDb(db *sql.DB) DB {
+func NewDB(db *sql.DB) DB {
 	if db == nil {
 		return nil
 	}

@@ -9,26 +9,26 @@ import (
 	"github.com/stretchr/testify/mock"
 )
 
-type MockDb struct {
+type MockDB struct {
 	mock.Mock
 }
 
-func (m *MockDb) Begin() (Tx, error) {
+func (m *MockDB) Begin() (Tx, error) {
 	res := m.Called()
 	return unpackTx(res.Get(0)), res.Error(1)
 }
 
-func (m *MockDb) BeginTx(ctx context.Context, opts *sql.TxOptions) (Tx, error) {
+func (m *MockDB) BeginTx(ctx context.Context, opts *sql.TxOptions) (Tx, error) {
 	res := m.Called(ctx, opts)
 	return unpackTx(res.Get(0)), res.Error(1)
 }
 
-func (m *MockDb) Close() error {
+func (m *MockDB) Close() error {
 	res := m.Called()
 	return res.Error(0)
 }
 
-func (m *MockDb) Driver() driver.Driver {
+func (m *MockDB) Driver() driver.Driver {
 	res := m.Called()
 	d := res.Get(0)
 	if d == nil {
@@ -37,7 +37,7 @@ func (m *MockDb) Driver() driver.Driver {
 	return d.(driver.Driver)
 }
 
-func (m *MockDb) Exec(query string, args ...interface{}) (sql.Result, error) {
+func (m *MockDB) Exec(query string, args ...interface{}) (sql.Result, error) {
 	params := make([]interface{}, len(args)+1)
 	params = append(params, query)
 	params = append(params, args...)
@@ -45,7 +45,7 @@ func (m *MockDb) Exec(query string, args ...interface{}) (sql.Result, error) {
 	return unpackSqlResult(res.Get(0)), res.Error(1)
 }
 
-func (m *MockDb) ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
+func (m *MockDB) ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
 	params := make([]interface{}, len(args)+2)
 	params = append(params, ctx)
 	params = append(params, query)
@@ -54,25 +54,25 @@ func (m *MockDb) ExecContext(ctx context.Context, query string, args ...interfac
 	return unpackSqlResult(res.Get(0)), res.Error(1)
 }
 
-func (m *MockDb) Ping() error {
+func (m *MockDB) Ping() error {
 	return m.Called().Error(0)
 }
 
-func (m *MockDb) PingContext(ctx context.Context) error {
+func (m *MockDB) PingContext(ctx context.Context) error {
 	return m.Called(ctx).Error(0)
 }
 
-func (m *MockDb) Prepare(query string) (Stmt, error) {
+func (m *MockDB) Prepare(query string) (Stmt, error) {
 	res := m.Called(query)
 	return unpackStmt(res.Get(0)), res.Error(1)
 }
 
-func (m *MockDb) PrepareContext(ctx context.Context, query string) (Stmt, error) {
+func (m *MockDB) PrepareContext(ctx context.Context, query string) (Stmt, error) {
 	res := m.Called(ctx, query)
 	return unpackStmt(res.Get(0)), res.Error(1)
 }
 
-func (m *MockDb) Query(query string, args ...interface{}) (Rows, error) {
+func (m *MockDB) Query(query string, args ...interface{}) (Rows, error) {
 	params := make([]interface{}, len(args)+1)
 	params = append(params, query)
 	params = append(params, args...)
@@ -80,7 +80,7 @@ func (m *MockDb) Query(query string, args ...interface{}) (Rows, error) {
 	return unpackRows(res.Get(0)), res.Error(1)
 }
 
-func (m *MockDb) QueryContext(ctx context.Context, query string, args ...interface{}) (Rows, error) {
+func (m *MockDB) QueryContext(ctx context.Context, query string, args ...interface{}) (Rows, error) {
 	params := make([]interface{}, len(args)+2)
 	params = append(params, ctx)
 	params = append(params, query)
@@ -89,7 +89,7 @@ func (m *MockDb) QueryContext(ctx context.Context, query string, args ...interfa
 	return unpackRows(res.Get(0)), res.Error(1)
 }
 
-func (m *MockDb) QueryRow(query string, args ...interface{}) Row {
+func (m *MockDB) QueryRow(query string, args ...interface{}) Row {
 	params := make([]interface{}, len(args)+1)
 	params = append(params, query)
 	params = append(params, args...)
@@ -97,7 +97,7 @@ func (m *MockDb) QueryRow(query string, args ...interface{}) Row {
 	return unpackRow(res.Get(0))
 }
 
-func (m *MockDb) QueryRowContext(ctx context.Context, query string, args ...interface{}) Row {
+func (m *MockDB) QueryRowContext(ctx context.Context, query string, args ...interface{}) Row {
 	params := make([]interface{}, len(args)+2)
 	params = append(params, ctx)
 	params = append(params, query)
@@ -106,19 +106,19 @@ func (m *MockDb) QueryRowContext(ctx context.Context, query string, args ...inte
 	return unpackRow(res.Get(0))
 }
 
-func (m *MockDb) SetConnMaxLifetime(dur time.Duration) {
+func (m *MockDB) SetConnMaxLifetime(dur time.Duration) {
 	m.Called(dur)
 }
 
-func (m *MockDb) SetMaxIdleConns(n int) {
+func (m *MockDB) SetMaxIdleConns(n int) {
 	m.Called(n)
 }
 
-func (m *MockDb) SetMaxOpenConns(n int) {
+func (m *MockDB) SetMaxOpenConns(n int) {
 	m.Called(n)
 }
 
-func (m *MockDb) Stats() sql.DBStats {
+func (m *MockDB) Stats() sql.DBStats {
 	return m.Called(0).Get(0).(sql.DBStats)
 }
 
