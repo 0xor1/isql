@@ -8,6 +8,15 @@ import (
 	"reflect"
 )
 
+
+func NewOpener() Opener {
+	return &opener{}
+}
+
+type Opener interface {
+	Open(driverName, dataSourceName string) (DB, error)
+}
+
 func NewDB(db *sql.DB) DB {
 	if db == nil {
 		return nil

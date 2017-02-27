@@ -8,6 +8,20 @@ import (
 	"reflect"
 )
 
+type opener struct {
+}
+
+func (o *opener) Open(driverName, dataSourceName string) (DB, error) {
+	db, err := sql.Open(driverName, dataSourceName)
+	if err != nil {
+		if db != nil {
+			db.Close()
+		}
+		return nil, err
+	}
+	return NewDB(db), nil
+}
+
 type dbWrapper struct {
 	db *sql.DB
 }
