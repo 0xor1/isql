@@ -1,13 +1,12 @@
 package isql
 
 import (
+	"context"
 	"database/sql"
 	"database/sql/driver"
-	"time"
-	"context"
 	"reflect"
+	"time"
 )
-
 
 func NewOpener() Opener {
 	return &opener{}
@@ -56,7 +55,7 @@ func NewRow(row *sql.Row) Row {
 	}
 }
 
-type Row interface{
+type Row interface {
 	Scan(dest ...interface{}) error
 }
 
@@ -69,7 +68,7 @@ func NewRows(rows *sql.Rows) Rows {
 	}
 }
 
-type Rows interface{
+type Rows interface {
 	Close() error
 	ColumnTypes() ([]ColumnType, error)
 	Columns() ([]string, error)
@@ -88,7 +87,7 @@ func NewStmt(stmt *sql.Stmt) Stmt {
 	}
 }
 
-type Stmt interface{
+type Stmt interface {
 	Close() error
 	Exec(args ...interface{}) (sql.Result, error)
 	ExecContext(ctx context.Context, args ...interface{}) (sql.Result, error)
@@ -107,7 +106,7 @@ func NewTx(tx *sql.Tx) Tx {
 	}
 }
 
-type Tx interface{
+type Tx interface {
 	Commit() error
 	Exec(query string, args ...interface{}) (sql.Result, error)
 	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
@@ -131,7 +130,7 @@ func NewColumnType(columnType *sql.ColumnType) ColumnType {
 	}
 }
 
-type ColumnType interface{
+type ColumnType interface {
 	DatabaseTypeName() string
 	DecimalSize() (precision, scale int64, ok bool)
 	Length() (length int64, ok bool)

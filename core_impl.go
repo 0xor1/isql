@@ -1,11 +1,11 @@
 package isql
 
 import (
-	"database/sql/driver"
-	"time"
-	"database/sql"
 	"context"
+	"database/sql"
+	"database/sql/driver"
 	"reflect"
+	"time"
 )
 
 type opener struct {
@@ -112,7 +112,7 @@ func (r *rowWrapper) Scan(dest ...interface{}) error {
 	return r.row.Scan(dest...)
 }
 
-type rowsWrapper struct{
+type rowsWrapper struct {
 	rows *sql.Rows
 }
 
@@ -149,7 +149,7 @@ func (r *rowsWrapper) Scan(dest ...interface{}) error {
 	return r.rows.Scan(dest...)
 }
 
-type stmtWrapper struct{
+type stmtWrapper struct {
 	stmt *sql.Stmt
 }
 
@@ -183,7 +183,7 @@ func (s *stmtWrapper) QueryRowContext(ctx context.Context, args ...interface{}) 
 	return NewRow(s.stmt.QueryRowContext(ctx, args...))
 }
 
-type txWrapper struct{
+type txWrapper struct {
 	tx *sql.Tx
 }
 
@@ -239,7 +239,7 @@ func (t *txWrapper) StmtContext(ctx context.Context, stmt *sql.Stmt) Stmt {
 	return NewStmt(t.tx.StmtContext(ctx, stmt))
 }
 
-type columnTypeWrapper struct{
+type columnTypeWrapper struct {
 	columnType *sql.ColumnType
 }
 
@@ -266,4 +266,3 @@ func (c *columnTypeWrapper) Nullable() (nullable, ok bool) {
 func (c *columnTypeWrapper) ScanType() reflect.Type {
 	return c.columnType.ScanType()
 }
-

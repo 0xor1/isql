@@ -1,12 +1,12 @@
 package isql
 
 import (
-	"database/sql/driver"
-	"time"
-	"database/sql"
 	"context"
-	"reflect"
+	"database/sql"
+	"database/sql/driver"
 	"github.com/stretchr/testify/mock"
+	"reflect"
+	"time"
 )
 
 type MockOpener struct {
@@ -157,7 +157,7 @@ func unpackRows(i interface{}) Rows {
 	return i.(Rows)
 }
 
-type MockRows struct{
+type MockRows struct {
 	mock.Mock
 }
 
@@ -206,7 +206,7 @@ func unpackStmt(i interface{}) Stmt {
 	return i.(Stmt)
 }
 
-type MockStmt struct{
+type MockStmt struct {
 	mock.Mock
 }
 
@@ -260,7 +260,7 @@ func unpackTx(i interface{}) Tx {
 	return i.(Tx)
 }
 
-type MockTx struct{
+type MockTx struct {
 	mock.Mock
 }
 
@@ -341,7 +341,7 @@ func (m *MockTx) StmtContext(ctx context.Context, stmt *sql.Stmt) Stmt {
 	return unpackStmt(m.Called(ctx, stmt).Get(0))
 }
 
-type MockColumnType struct{
+type MockColumnType struct {
 	mock.Mock
 }
 
@@ -384,7 +384,7 @@ func unpackSqlResult(i interface{}) sql.Result {
 	return i.(sql.Result)
 }
 
-type MockResult struct{
+type MockResult struct {
 	mock.Mock
 }
 
@@ -397,4 +397,3 @@ func (m *MockResult) RowsAffected() (int64, error) {
 	res := m.Called()
 	return res.Get(0).(int64), res.Error(1)
 }
-
