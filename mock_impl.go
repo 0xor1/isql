@@ -135,7 +135,7 @@ func (m *MockDB) Stats() sql.DBStats {
 	return m.Called(0).Get(0).(sql.DBStats)
 }
 
-type MockReplicaSet struct{
+type MockReplicaSet struct {
 	mock.Mock
 }
 

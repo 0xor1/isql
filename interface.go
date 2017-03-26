@@ -44,6 +44,26 @@ type DB interface {
 	Stats() sql.DBStats
 }
 
+func NewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceNames []string) (ReplicaSet, error) {
+	op := &opener{}
+	primary, err := op.Open(driverName, primaryDataSourceName)
+	if err != nil {
+		return nil, err
+	}
+	rs := &replicaSet{
+		primary: primary,
+		slaves:  make([]ReplicaSet, 0, len(slaveDataSourceNames)),
+	}
+	for _, slaveDataSourceName := range slaveDataSourceNames {
+		slave, err := op.Open(driverName, slaveDataSourceName)
+		if err != nil {
+			return nil, err
+		}
+		rs.slaves = append(rs.slaves, slave)
+	}
+	return rs, nil
+}
+
 type ReplicaSet interface {
 	Exec(query string, args ...interface{}) (sql.Result, error)
 	Query(query string, args ...interface{}) (Rows, error)
