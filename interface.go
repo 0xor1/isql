@@ -26,24 +26,28 @@ func NewDB(db *sql.DB) DB {
 }
 
 type DB interface {
+	ReplicaSet
 	Begin() (Tx, error)
 	BeginTx(ctx context.Context, opts *sql.TxOptions) (Tx, error)
 	Close() error
 	Driver() driver.Driver
-	Exec(query string, args ...interface{}) (sql.Result, error)
 	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
 	Ping() error
 	PingContext(ctx context.Context) error
 	Prepare(query string) (Stmt, error)
 	PrepareContext(ctx context.Context, query string) (Stmt, error)
-	Query(query string, args ...interface{}) (Rows, error)
 	QueryContext(ctx context.Context, query string, args ...interface{}) (Rows, error)
-	QueryRow(query string, args ...interface{}) Row
 	QueryRowContext(ctx context.Context, query string, args ...interface{}) Row
 	SetConnMaxLifetime(d time.Duration)
 	SetMaxIdleConns(n int)
 	SetMaxOpenConns(n int)
 	Stats() sql.DBStats
+}
+
+type ReplicaSet interface {
+	Exec(query string, args ...interface{}) (sql.Result, error)
+	Query(query string, args ...interface{}) (Rows, error)
+	QueryRow(query string, args ...interface{}) Row
 }
 
 func NewRow(row *sql.Row) Row {
@@ -107,14 +111,12 @@ func NewTx(tx *sql.Tx) Tx {
 }
 
 type Tx interface {
+	ReplicaSet
 	Commit() error
-	Exec(query string, args ...interface{}) (sql.Result, error)
 	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
 	Prepare(query string) (Stmt, error)
 	PrepareContext(ctx context.Context, query string) (Stmt, error)
-	Query(query string, args ...interface{}) (Rows, error)
 	QueryContext(ctx context.Context, query string, args ...interface{}) (Rows, error)
-	QueryRow(query string, args ...interface{}) Row
 	QueryRowContext(ctx context.Context, query string, args ...interface{}) Row
 	Rollback() error
 	Stmt(stmt *sql.Stmt) Stmt

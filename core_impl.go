@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"database/sql/driver"
+	"math/rand"
 	"reflect"
 	"time"
 )
@@ -102,6 +103,31 @@ func (d *dbWrapper) SetMaxOpenConns(n int) {
 
 func (d *dbWrapper) Stats() sql.DBStats {
 	return d.db.Stats()
+}
+
+type replicaSet struct {
+	primary ReplicaSet
+	slaves  []ReplicaSet
+}
+
+func (r *replicaSet) Exec(query string, args ...interface{}) (sql.Result, error) {
+	return r.primary.Exec(query, args...)
+}
+
+func (r *replicaSet) Query(query string, args ...interface{}) (Rows, error) {
+	if len(r.slaves) > 0 {
+		return r.slaves[rand.Intn(len(r.slaves))].Query(query, args...)
+	} else {
+		return r.primary.Query(query, args...)
+	}
+}
+
+func (r *replicaSet) QueryRow(query string, args ...interface{}) Row {
+	if len(r.slaves) > 0 {
+		return r.slaves[rand.Intn(len(r.slaves))].QueryRow(query, args...)
+	} else {
+		return r.primary.QueryRow(query, args...)
+	}
 }
 
 type rowWrapper struct {
