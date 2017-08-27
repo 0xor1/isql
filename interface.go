@@ -44,11 +44,11 @@ type DB interface {
 	Stats() sql.DBStats
 }
 
-func NewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceNames []string) (ReplicaSet, error) {
+func NewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceNames []string) (ReplicaSet) {
 	op := &opener{}
 	primary, err := op.Open(driverName, primaryDataSourceName)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 	rs := &replicaSet{
 		primary: primary,
@@ -57,11 +57,11 @@ func NewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceName
 	for _, slaveDataSourceName := range slaveDataSourceNames {
 		slave, err := op.Open(driverName, slaveDataSourceName)
 		if err != nil {
-			return nil, err
+			panic(err)
 		}
 		rs.slaves = append(rs.slaves, slave)
 	}
-	return rs, nil
+	return rs
 }
 
 type ReplicaSet interface {
