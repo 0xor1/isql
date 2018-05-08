@@ -26,7 +26,7 @@ func NewDB(db *sql.DB) DB {
 }
 
 type DB interface {
-	ReplicaSet
+	DBCore
 	Begin() (Tx, error)
 	BeginTx(ctx context.Context, opts *sql.TxOptions) (Tx, error)
 	Close() error
@@ -52,7 +52,7 @@ func NewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceName
 	}
 	rs := &replicaSet{
 		primary: primary,
-		slaves:  make([]ReplicaSet, 0, len(slaveDataSourceNames)),
+		slaves:  make([]DBCore, 0, len(slaveDataSourceNames)),
 	}
 	for _, slaveDataSourceName := range slaveDataSourceNames {
 		slave, err := op.Open(driverName, slaveDataSourceName)
@@ -64,10 +64,16 @@ func NewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceName
 	return rs
 }
 
-type ReplicaSet interface {
+type DBCore interface {
 	Exec(query string, args ...interface{}) (sql.Result, error)
 	Query(query string, args ...interface{}) (Rows, error)
 	QueryRow(query string, args ...interface{}) Row
+}
+
+type ReplicaSet interface {
+	DBCore
+	Primary() DBCore
+	Slaves() []DBCore
 }
 
 func NewRow(row *sql.Row) Row {
@@ -131,7 +137,7 @@ func NewTx(tx *sql.Tx) Tx {
 }
 
 type Tx interface {
-	ReplicaSet
+	DBCore
 	Commit() error
 	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
 	Prepare(query string) (Stmt, error)

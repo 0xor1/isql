@@ -163,6 +163,24 @@ func (m *MockReplicaSet) QueryRow(query string, args ...interface{}) Row {
 	return unpackRow(res.Get(0))
 }
 
+func (m *MockReplicaSet) Primary() DBCore {
+	res := m.Called().Get(0)
+	if res == nil {
+		return nil
+	}
+	return res.(DBCore)
+}
+
+func (m *MockReplicaSet) Slaves() []DBCore {
+	res := m.Called().Get(0)
+	if res == nil {
+		return nil
+	}
+	return res.([]DBCore)
+}
+
+
+
 func unpackRow(i interface{}) Row {
 	if i == nil {
 		return nil

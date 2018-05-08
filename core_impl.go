@@ -106,8 +106,8 @@ func (d *dbWrapper) Stats() sql.DBStats {
 }
 
 type replicaSet struct {
-	primary ReplicaSet
-	slaves  []ReplicaSet
+	primary DBCore
+	slaves  []DBCore
 }
 
 func (r *replicaSet) Exec(query string, args ...interface{}) (sql.Result, error) {
@@ -128,6 +128,14 @@ func (r *replicaSet) QueryRow(query string, args ...interface{}) Row {
 	} else {
 		return r.primary.QueryRow(query, args...)
 	}
+}
+
+func (r *replicaSet) Primary() DBCore {
+	return r.primary
+}
+
+func (r *replicaSet) Slaves() []DBCore {
+	return r.slaves
 }
 
 type rowWrapper struct {
