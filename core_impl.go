@@ -110,23 +110,23 @@ type replicaSet struct {
 	slaves  []DBCore
 }
 
-func (r *replicaSet) Exec(query string, args ...interface{}) (sql.Result, error) {
-	return r.primary.Exec(query, args...)
+func (r *replicaSet) ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
+	return r.primary.ExecContext(ctx, query, args...)
 }
 
-func (r *replicaSet) Query(query string, args ...interface{}) (Rows, error) {
+func (r *replicaSet) QueryContext(ctx context.Context, query string, args ...interface{}) (Rows, error) {
 	if len(r.slaves) > 0 {
-		return r.slaves[rand.Intn(len(r.slaves))].Query(query, args...)
+		return r.slaves[rand.Intn(len(r.slaves))].QueryContext(ctx, query, args...)
 	} else {
-		return r.primary.Query(query, args...)
+		return r.primary.QueryContext(ctx, query, args...)
 	}
 }
 
-func (r *replicaSet) QueryRow(query string, args ...interface{}) Row {
+func (r *replicaSet) QueryRowContext(ctx context.Context, query string, args ...interface{}) Row {
 	if len(r.slaves) > 0 {
-		return r.slaves[rand.Intn(len(r.slaves))].QueryRow(query, args...)
+		return r.slaves[rand.Intn(len(r.slaves))].QueryRowContext(ctx, query, args...)
 	} else {
-		return r.primary.QueryRow(query, args...)
+		return r.primary.QueryRowContext(ctx, query, args...)
 	}
 }
 

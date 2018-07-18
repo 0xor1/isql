@@ -31,13 +31,13 @@ type DB interface {
 	BeginTx(ctx context.Context, opts *sql.TxOptions) (Tx, error)
 	Close() error
 	Driver() driver.Driver
-	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
+	Exec(query string, args ...interface{}) (sql.Result, error)
 	Ping() error
 	PingContext(ctx context.Context) error
 	Prepare(query string) (Stmt, error)
 	PrepareContext(ctx context.Context, query string) (Stmt, error)
-	QueryContext(ctx context.Context, query string, args ...interface{}) (Rows, error)
-	QueryRowContext(ctx context.Context, query string, args ...interface{}) Row
+	Query(query string, args ...interface{}) (Rows, error)
+	QueryRow(query string, args ...interface{}) Row
 	SetConnMaxLifetime(d time.Duration)
 	SetMaxIdleConns(n int)
 	SetMaxOpenConns(n int)
@@ -65,9 +65,9 @@ func NewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceName
 }
 
 type DBCore interface {
-	Exec(query string, args ...interface{}) (sql.Result, error)
-	Query(query string, args ...interface{}) (Rows, error)
-	QueryRow(query string, args ...interface{}) Row
+	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
+	QueryContext(ctx context.Context, query string, args ...interface{}) (Rows, error)
+	QueryRowContext(ctx context.Context, query string, args ...interface{}) Row
 }
 
 type ReplicaSet interface {
@@ -139,11 +139,11 @@ func NewTx(tx *sql.Tx) Tx {
 type Tx interface {
 	DBCore
 	Commit() error
-	ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
+	Exec(query string, args ...interface{}) (sql.Result, error)
 	Prepare(query string) (Stmt, error)
 	PrepareContext(ctx context.Context, query string) (Stmt, error)
-	QueryContext(ctx context.Context, query string, args ...interface{}) (Rows, error)
-	QueryRowContext(ctx context.Context, query string, args ...interface{}) Row
+	Query(query string, args ...interface{}) (Rows, error)
+	QueryRow(query string, args ...interface{}) Row
 	Rollback() error
 	Stmt(stmt *sql.Stmt) Stmt
 	StmtContext(ctx context.Context, stmt *sql.Stmt) Stmt

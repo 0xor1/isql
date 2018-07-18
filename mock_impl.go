@@ -139,24 +139,27 @@ type MockReplicaSet struct {
 	mock.Mock
 }
 
-func (m *MockReplicaSet) Exec(query string, args ...interface{}) (sql.Result, error) {
-	params := make([]interface{}, 0, len(args)+1)
+func (m *MockReplicaSet) ExecContext(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
+	params := make([]interface{}, 0, len(args)+2)
+	params = append(params, ctx)
 	params = append(params, query)
 	params = append(params, args...)
 	res := m.Called(params...)
 	return unpackSqlResult(res.Get(0)), res.Error(1)
 }
 
-func (m *MockReplicaSet) Query(query string, args ...interface{}) (Rows, error) {
-	params := make([]interface{}, 0, len(args)+1)
+func (m *MockReplicaSet) QueryContext(ctx context.Context, query string, args ...interface{}) (Rows, error) {
+	params := make([]interface{}, 0, len(args)+2)
+	params = append(params, ctx)
 	params = append(params, query)
 	params = append(params, args...)
 	res := m.Called(params...)
 	return unpackRows(res.Get(0)), res.Error(1)
 }
 
-func (m *MockReplicaSet) QueryRow(query string, args ...interface{}) Row {
-	params := make([]interface{}, 0, len(args)+1)
+func (m *MockReplicaSet) QueryRowContext(ctx context.Context, query string, args ...interface{}) Row {
+	params := make([]interface{}, 0, len(args)+2)
+	params = append(params, ctx)
 	params = append(params, query)
 	params = append(params, args...)
 	res := m.Called(params...)
