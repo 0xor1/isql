@@ -49,7 +49,7 @@ func NewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceName
 	op := &opener{}
 	primary, err := op.Open(driverName, primaryDataSourceName)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	rs := &replicaSet{
 		primary: primary,
@@ -58,16 +58,16 @@ func NewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceName
 	for _, slaveDataSourceName := range slaveDataSourceNames {
 		slave, err := op.Open(driverName, slaveDataSourceName)
 		if err != nil {
-			return err
+			return nil, err
 		}
 		rs.slaves = append(rs.slaves, slave)
 	}
-	return rs
+	return rs, nil
 }
 
 func MustNewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceNames ...string) ReplicaSet {
 	rs, err := NewReplicaSet(driverName, primaryDataSourceName, slaveDataSourceNames...)
-	panic.If(err)
+	panic.IfNotNil(err)
 	return rs
 }
 
