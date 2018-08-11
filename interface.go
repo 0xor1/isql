@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"database/sql/driver"
 	"reflect"
+	"github.com/0xor1/panic"
 	"time"
 )
 
@@ -44,11 +45,11 @@ type DB interface {
 	Stats() sql.DBStats
 }
 
-func NewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceNames []string) (ReplicaSet) {
+func NewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceNames ...string) (ReplicaSet, error) {
 	op := &opener{}
 	primary, err := op.Open(driverName, primaryDataSourceName)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	rs := &replicaSet{
 		primary: primary,
@@ -57,10 +58,16 @@ func NewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceName
 	for _, slaveDataSourceName := range slaveDataSourceNames {
 		slave, err := op.Open(driverName, slaveDataSourceName)
 		if err != nil {
-			panic(err)
+			return err
 		}
 		rs.slaves = append(rs.slaves, slave)
 	}
+	return rs
+}
+
+func MustNewReplicaSet(driverName, primaryDataSourceName string, slaveDataSourceNames ...string) ReplicaSet {
+	rs, err := NewReplicaSet(driverName, primaryDataSourceName, slaveDataSourceNames...)
+	panic.If(err)
 	return rs
 }
 
